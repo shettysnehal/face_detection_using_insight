@@ -20,7 +20,7 @@ role = st.selectbox(label='Select your Role',options=('Student',
 
 # step-2: Collect facial embedding of that person
 def video_callback_func(frame):
-    print("hi")
+    
     img = frame.to_ndarray(format='bgr24') # 3d array bgr
     reg_img, embedding = registration_form.get_embedding(img)
     # two step process

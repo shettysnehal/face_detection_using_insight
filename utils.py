@@ -24,17 +24,20 @@ password = None
 r = redis.StrictRedis(host=hostname,
                       port=portnumber,
                       password=password,
-                      decode_responses=True)
+                      )
 
 # Retrive Data from database
 def retrieve_data(name):
+    # Retrieve raw byte data from Redis, disable auto-decoding
     retrive_dict = r.hgetall(name)
+    
+    # Convert the byte data to float32 using numpy
     retrive_series = pd.Series(retrive_dict)
     retrive_series = retrive_series.apply(lambda x: np.frombuffer(x, dtype=np.float32))
     
-    # Decode keys for proper indexing
+    # Decode keys for proper indexing (with error handling)
     index = retrive_series.index
-    index = list(map(lambda x: x.decode(), index))
+    index = list(map(lambda x: x.decode('utf-8', 'ignore'), index))  # Skip invalid bytes
     retrive_series.index = index
     
     # Convert to DataFrame
@@ -45,7 +48,6 @@ def retrieve_data(name):
     retrive_df[['Name', 'Role']] = retrive_df['name_role'].str.split('@', expand=True)
     
     return retrive_df[['Name', 'Role', 'facial_features']]
-
 
 
 # configure face analysis

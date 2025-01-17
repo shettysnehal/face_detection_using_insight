@@ -17,10 +17,7 @@ import utils
 with st.spinner('Retrieving Data from Redis DB...'):
     try:
         redis_face_db = utils.retrieve_data(name='academy:register')
-        if redis_face_db is not None:
-            st.dataframe(redis_face_db)
-        else:
-            st.error("Failed to retrieve data from Redis.")
+        
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
